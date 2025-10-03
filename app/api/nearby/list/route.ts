@@ -15,7 +15,8 @@ export async function GET(req: Request) {
     }
 
     // Query within radius using Redis GEOSEARCH
-    const results = await redis.geosearch(geoKey(serverId), {
+    // @upstash/redis typings expect a different overload; cast to any to call with this shape.
+    const results = await (redis as any).geosearch(geoKey(serverId), {
       byLonLat: { longitude: lon, latitude: lat },
       radius: radiusKm,
       unit: "km",

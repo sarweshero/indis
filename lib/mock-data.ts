@@ -35,10 +35,10 @@ export const channelsByServer: Record<string, any> = {
 }
 
 export const users = [
-  { id: "u1", name: "Ava", status: "🔥 Grinding Ranked", role: "Leader" },
-  { id: "u2", name: "Kai", status: "🎮 Playing Elden Ring", role: "Mod" },
-  { id: "u3", name: "Rin", status: "🟢 Online", role: "Member" },
-  { id: "u4", name: "Ezra", status: "🟠 Away", role: "Member" },
+  { id: "u1", name: "Ava", email: "ava@example.com", status: "🔥 Grinding Ranked", role: "Leader" },
+  { id: "u2", name: "Kai", email: "kai@example.com", status: "🎮 Playing Elden Ring", role: "Mod" },
+  { id: "u3", name: "Rin", email: "rin@example.com", status: "🟢 Online", role: "Member" },
+  { id: "u4", name: "Ezra", email: "ezra@example.com", status: "🟠 Away", role: "Member" },
 ]
 
 export const messages = [

@@ -1,9 +1,15 @@
 import { channelsByServer } from "@/lib/mock-data"
 import { slugify } from "@/lib/mock-data"
+import { users } from "@/lib/mock-data"
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
   const server = searchParams.get("server") || "valorant"
+  if (server === "dm") {
+    // Build Direct Messages section from users
+    const items = users.map((u: any) => ({ id: `dm-${u.id}`, name: u.name, icon: "@" }))
+    return Response.json({ sections: [{ title: "Direct Messages", items }] })
+  }
   return Response.json(channelsByServer[server] ?? { sections: [] })
 }
 

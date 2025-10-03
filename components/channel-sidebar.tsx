@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
+import { gravatarUrl } from '@/lib/gravatar'
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json())
 
@@ -17,6 +18,7 @@ export function ChannelSidebar({
   onSelectChannel: (id: string) => void
 }) {
   const { data, mutate } = useSWR(`/api/mock/channels?server=${serverId}`, fetcher)
+  const { data: allUsers } = useSWR(`/api/mock/users`, fetcher)
 
   const [newChannel, setNewChannel] = useState("")
 
@@ -28,6 +30,48 @@ export function ChannelSidebar({
       await mutate()
       setNewChannel("")
     }
+  }
+
+  // Special layout for Direct Messages
+  if (serverId === "dm") {
+    return (
+      <aside className={cn("hidden md:flex md:w-64 xl:w-72 h-full flex-col bg-sidebar border-r border-sidebar-border")}>
+        <div className="p-3">
+          <Input placeholder="Find or start a conversation" />
+        </div>
+        <div className="px-3 pb-2 text-xs font-semibold">Direct Messages</div>
+        <nav className="px-2 pb-4 overflow-y-auto">
+          <ul className="space-y-2">
+            {(data?.sections?.[0]?.items ?? []).map((c: any) => {
+              // channel id is 'dm-<userId>'
+              const userId = String(c.id || '').replace(/^dm-/, '')
+              const user = (allUsers ?? []).find((u: any) => u.id === userId)
+              const avatar = user?.email ? gravatarUrl(user.email, 40) : "/placeholder.svg?height=40&width=40&query=" + c.name
+              return (
+                <li key={c.id}>
+                  <button
+                    onClick={() => onSelectChannel(c.id)}
+                    className="w-full flex items-center gap-3 rounded-md px-2 py-1.5 text-left hover:bg-sidebar-accent"
+                  >
+                    <img src={avatar} alt={c.name + " avatar"} className="h-9 w-9 rounded-full" />
+                    <div className="min-w-0">
+                      <div className="text-sm font-medium truncate">{c.name}</div>
+                      <div className="text-xs text-muted-foreground truncate">{user?.status ?? '—'}</div>
+                    </div>
+                  </button>
+                </li>
+              )
+            })}
+          </ul>
+        </nav>
+        <div className="mt-auto p-3">
+          <div className="flex items-center gap-2">
+            <img src={gravatarUrl('you@example.com', 36)} className="h-9 w-9 rounded-full" />
+            <div className="text-sm">You</div>
+          </div>
+        </div>
+      </aside>
+    )
   }
 
   return (

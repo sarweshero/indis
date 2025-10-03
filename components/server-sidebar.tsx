@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
+import { gravatarUrl } from '@/lib/gravatar'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { useState } from "react"
 
@@ -72,6 +73,19 @@ export function ServerSidebar({
         </Dialog>
       </div>
       <nav className="flex flex-col items-center gap-3 py-3">
+        {/* Direct Messages shortcut */}
+        <button
+          key="dm"
+          onClick={() => onSelectServer("dm")}
+          className={cn(
+            "relative aspect-square w-10 md:w-12 rounded-xl transition-transform hover:scale-105 focus-visible:outline-none neon-ring",
+            activeServerId === "dm" ? "ring-2 ring-ring" : "opacity-90",
+          )}
+          aria-label="Direct messages"
+          title="Direct messages"
+        >
+          <div className="h-full w-full rounded-xl flex items-center justify-center bg-blue-600 text-white font-bold text-lg">D</div>
+        </button>
         {data?.map((s) => (
           <button
             key={s.id}
@@ -84,7 +98,10 @@ export function ServerSidebar({
             title={s.name}
           >
             <img
-              src={"/placeholder.svg?height=80&width=80&query=server-" + s.name}
+              src={
+                // Use a deterministic gravatar for server based on id; fall back to placeholder
+                gravatarUrl(s.id + "@servers.example", 80) || "/placeholder.svg?height=80&width=80&query=server-" + s.name
+              }
               alt={s.name + " server icon"}
               className="h-full w-full rounded-xl"
             />
