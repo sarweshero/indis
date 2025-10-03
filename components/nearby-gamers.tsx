@@ -3,6 +3,7 @@
 import useSWR from "swr"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
+import { gravatarUrl } from '@/lib/gravatar'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 
@@ -122,7 +123,11 @@ export function NearbyGamers({ serverId }: { serverId: string }) {
             {(nearby?.nearby ?? []).map((n: any) => (
               <li key={n.id} className="flex items-center gap-3">
                 <img
-                  src={"/placeholder.svg?height=32&width=32&query=" + n.name}
+                  src={
+                    (members ?? []).find((u: any) => u.name === n.name)?.email
+                      ? gravatarUrl((members ?? []).find((u: any) => u.name === n.name).email, 32)
+                      : "/placeholder.svg?height=32&width=32&query=" + n.name
+                  }
                   alt={n.name + " avatar"}
                   className="h-8 w-8 rounded-full"
                 />

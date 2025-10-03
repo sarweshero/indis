@@ -8,6 +8,7 @@ import { MiniGames } from "./mini-games"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { gravatarUrl } from '@/lib/gravatar'
 import { useState } from "react"
 import { NearbyGamers } from "./nearby-gamers"
 
@@ -101,7 +102,12 @@ export function RightPanel({
               {members?.map((m: any) => (
                 <li key={m.id} className="flex items-center gap-2">
                   <img
-                    src={"/placeholder.svg?height=32&width=32&query=" + m.name}
+                    src={
+                      // members here are from serverMembers mapping; find user email
+                      (allUsers ?? []).find((u: any) => u.name === m.name)?.email
+                        ? gravatarUrl((allUsers ?? []).find((u: any) => u.name === m.name).email, 32)
+                        : "/placeholder.svg?height=32&width=32&query=" + m.name
+                    }
                     alt={m.name + " avatar"}
                     className="h-8 w-8 rounded-full"
                   />
